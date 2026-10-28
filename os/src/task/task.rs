@@ -1,5 +1,4 @@
 //! Types related to task management
-
 use super::TaskContext;
 
 /// The task control block (TCB) of a task.

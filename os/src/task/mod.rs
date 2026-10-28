@@ -13,7 +13,8 @@ mod context;
 mod switch;
 #[allow(clippy::module_inception)]
 mod task;
-
+///系统调用计数器实现模块
+pub mod counter;
 use crate::config::MAX_APP_NUM;
 use crate::loader::{get_num_app, init_app_cx};
 use crate::sync::UPSafeCell;
@@ -135,6 +136,12 @@ impl TaskManager {
             panic!("All applications completed!");
         }
     }
+
+    //返回当前任务id
+    fn get_current_task(&self) -> usize {
+        let inner = self.inner.exclusive_access();
+        inner.current_task
+    }
 }
 
 /// Run the first task in task list.
@@ -168,4 +175,9 @@ pub fn suspend_current_and_run_next() {
 pub fn exit_current_and_run_next() {
     mark_current_exited();
     run_next_task();
+}
+
+///获取当前正在执行的任务id
+pub fn current_task_id() -> usize {
+    TASK_MANAGER.get_current_task()
 }
